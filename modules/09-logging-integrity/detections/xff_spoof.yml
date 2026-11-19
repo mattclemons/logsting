@@ -1,0 +1,25 @@
+title: Spoofed X-Forwarded-For reaching the application (log poisoning)
+id: 7b2c1e4a-0f3d-4c9a-9a1b-9f2d6a1c3e55
+status: experimental
+description: >
+  The app emitted an OCSF Detection Finding (class_uid 2004) because a client
+  supplied its own X-Forwarded-For before the WAF appended the real hop. CRS
+  does not flag XFF spoofing; this is an application-layer catch of an attempt
+  to forge the logged source IP.
+references:
+  - https://owasp.org/Top10/A09_2021-Security_Logging_and_Monitoring_Failures/
+author: LogSting
+logsource:
+  product: logsting
+  service: security
+detection:
+  selection:
+    class_uid: 2004
+    message|contains: 'X-Forwarded-For'
+  condition: selection
+falsepositives:
+  - Legitimate multi-proxy paths where more than one upstream hop is expected
+level: high
+tags:
+  - attack.defense_evasion
+  - attack.t1070

@@ -1,0 +1,54 @@
+# logsting: a secure, instrumented web app behind an OWASP CRS WAF.
+# The app emits OCSF security events; the WAF emits a JSON audit log. Both land
+# in ./logs so the Sigma/Chainsaw tests (and your eyes) can read them.
+services:
+  app:
+    build: ./app
+    environment:
+      APP_LOG_DIR: /var/log/app
+      APP_SECRET: ${APP_SECRET:-dev-only-not-a-real-secret}
+      PORT: "3000"
+      # Trust only the WAF, which sits on this compose subnet. The app resolves
+      # the real client from XFF right-to-left and ignores client-set hops.
+      TRUSTED_PROXY: "172.30.0.0/24"
+    volumes:
+      - ./logs/app:/var/log/app
+    expose:
+      - "3000"
+    networks:
+      - lab
+    restart: unless-stopped
+
+  waf:
+    # OWASP ModSecurity Core Rule Set, nginx variant, as a reverse proxy.
+    image: owasp/modsecurity-crs:4.25-nginx-lts
+    depends_on:
+      - app
+    environment:
+      SERVERNAME: logsting
+      BACKEND: "http://app:3000"
+      PORT: "8080"
+      # On = block; DetectionOnly = log but allow (good for the detect-first exercise)
+      MODSEC_RULE_ENGINE: "On"
+      BLOCKING_PARANOIA: "1"
+      ANOMALY_INBOUND: "5"
+      MODSEC_REQ_BODY_ACCESS: "On"
+      # JSON audit log of the relevant (flagged) transactions, to the shared volume
+      MODSEC_AUDIT_ENGINE: "RelevantOnly"
+      MODSEC_AUDIT_LOG_FORMAT: "JSON"
+      MODSEC_AUDIT_LOG_TYPE: "Serial"
+      MODSEC_AUDIT_LOG: "/var/log/waf/audit.json"
+    volumes:
+      - ./logs/waf:/var/log/waf
+    ports:
+      - "8080:8080"
+    networks:
+      - lab
+    restart: unless-stopped
+
+networks:
+  lab:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24

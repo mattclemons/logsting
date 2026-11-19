@@ -1,0 +1,26 @@
+title: SSRF attempt blocked (off-allowlist import target)
+id: 2c7e4a18-9d60-4b35-8f12-6a0d3e9c7b24
+status: experimental
+description: >
+  The app emitted an OCSF API Activity event (class_uid 6003, status Failure)
+  because a server-side fetch targeted a host not on the import allowlist. SSRF
+  aims the server at internal or metadata addresses; an allowlist is the control,
+  and an off-allowlist attempt is the signal. The WAF does not know which hosts
+  the app may reach.
+references:
+  - https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29/
+author: LogSting
+logsource:
+  product: logsting
+  service: security
+detection:
+  selection:
+    class_uid: 6003
+    message|contains: 'off allowlist'
+  condition: selection
+falsepositives:
+  - A new legitimate upstream host not yet added to the allowlist
+level: high
+tags:
+  - attack.initial_access
+  - attack.t1190

@@ -1,0 +1,19 @@
+# Chainsaw mapping for LogSting OCSF events (JSON), scoped to Detection Findings.
+name: LogSting OCSF NDJSON
+kind: json
+rules: sigma
+groups:
+  - name: logsting
+    timestamp: time_dt
+    filter:
+      class_uid: 2004
+    fields:
+      - name: class_uid
+        from: class_uid
+        to: class_uid
+      - name: status_id
+        from: status_id
+        to: status_id
+      - name: message
+        from: message
+        to: message

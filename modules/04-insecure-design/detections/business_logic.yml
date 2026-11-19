@@ -1,0 +1,24 @@
+title: Business rule violation at checkout (insecure design)
+id: 1e8d5a46-3c90-4b72-a1f0-6d2b9c4e7a81
+status: experimental
+description: >
+  The app emitted an OCSF API Activity event (class_uid 6003, status Failure)
+  because a checkout broke a business rule: a negative or out-of-range quantity,
+  an unknown SKU, or a client-supplied price. These are valid HTTP requests with
+  no attack signature; the WAF cannot judge intent, only the app can.
+references:
+  - https://owasp.org/Top10/A04_2021-Insecure_Design/
+author: LogSting
+logsource:
+  product: logsting
+  service: security
+detection:
+  selection:
+    class_uid: 6003
+    message|contains: 'business rule'
+  condition: selection
+falsepositives:
+  - Buggy clients sending malformed quantities
+level: medium
+tags:
+  - attack.impact

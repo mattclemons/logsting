@@ -1,0 +1,26 @@
+title: Attack signature reached the application (WAF bypass)
+id: 9f3b6c21-7a4e-4d10-8b55-2c9e1a7d4e30
+status: experimental
+description: >
+  The app emitted an OCSF Detection Finding (class_uid 2004) because input
+  matching an attack signature reached the sink. The WAF blocks injection in the
+  places it inspects (query args, bodies); input it never parsed, such as a
+  custom header, arrives unflagged. Detection at the app catches what the edge
+  missed.
+references:
+  - https://owasp.org/Top10/A03_2021-Injection/
+author: LogSting
+logsource:
+  product: logsting
+  service: security
+detection:
+  selection:
+    class_uid: 2004
+    message|contains: 'attack signature'
+  condition: selection
+falsepositives:
+  - Security researchers or scanners probing the app directly
+level: high
+tags:
+  - attack.initial_access
+  - attack.t1190

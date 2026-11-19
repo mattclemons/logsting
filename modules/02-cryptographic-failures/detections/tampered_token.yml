@@ -1,0 +1,25 @@
+title: Tampered session token (HMAC verification failed)
+id: 4c1a7e93-5b2d-4f08-9c61-7e0a2d4b1f6c
+status: experimental
+description: >
+  The app emitted an OCSF Detection Finding (class_uid 2004) because a presented
+  session token failed HMAC verification. A valid-looking bearer token with a
+  broken signature is a forgery or tamper attempt, often privilege escalation.
+  CRS cannot see this; only the app holds the signing key.
+references:
+  - https://owasp.org/Top10/A02_2021-Cryptographic_Failures/
+author: LogSting
+logsource:
+  product: logsting
+  service: security
+detection:
+  selection:
+    class_uid: 2004
+    message|contains: 'HMAC verification'
+  condition: selection
+falsepositives:
+  - Key rotation without session invalidation can briefly produce verify failures
+level: high
+tags:
+  - attack.credential_access
+  - attack.t1552

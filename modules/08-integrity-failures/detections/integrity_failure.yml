@@ -1,0 +1,25 @@
+title: Data integrity verification failed (untrusted update)
+id: 5f2a9d71-6b48-4c13-9e07-1a3d8c5b2e49
+status: experimental
+description: >
+  The app emitted an OCSF Detection Finding (class_uid 2004) because an update
+  payload did not match the pinned SHA-256 for its release. A digest mismatch
+  means the data was tampered with or comes from an untrusted source. The WAF
+  does not hold the expected hash; integrity verification is the app's job.
+references:
+  - https://owasp.org/Top10/A08_2021-Software_and_Data_Integrity_Failures/
+author: LogSting
+logsource:
+  product: logsting
+  service: security
+detection:
+  selection:
+    class_uid: 2004
+    message|contains: 'integrity check'
+  condition: selection
+falsepositives:
+  - A legitimate new release whose pin was not updated
+level: high
+tags:
+  - attack.defense_evasion
+  - attack.t1565.001

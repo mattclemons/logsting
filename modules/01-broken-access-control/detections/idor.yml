@@ -1,0 +1,25 @@
+title: Broken access control probe (BOLA/IDOR)
+id: 2d6f4b19-8c0a-4e77-9d2b-1a7c5e3f09aa
+status: experimental
+description: >
+  An authorization decision was denied on a resource (OCSF Web Resources Access
+  6004, status Failure). One deny can be a mistake; repeated denies from one
+  actor are object enumeration. The WAF cannot see this: the request is a normal
+  authenticated GET.
+references:
+  - https://owasp.org/Top10/A01_2021-Broken_Access_Control/
+author: LogSting
+logsource:
+  product: logsting
+  service: security
+detection:
+  selection:
+    class_uid: 6004
+    status_id: 2
+  condition: selection
+falsepositives:
+  - Occasional legitimate denies; tune with a per-actor count threshold in a SIEM
+level: medium
+tags:
+  - attack.discovery
+  - attack.t1087

@@ -1,0 +1,25 @@
+title: Vulnerable or outdated dependency in use
+id: 3b7e1f90-2a46-4c58-9d13-5e8a0b2c6f74
+status: experimental
+description: >
+  A dependency scan emitted an OCSF Detection Finding (class_uid 2004) because a
+  declared component is below its fixed version for a known CVE. This is not a
+  request-time event; it is a software composition check. The WAF has no view of
+  what the app is built from.
+references:
+  - https://owasp.org/Top10/A06_2021-Vulnerable_and_Outdated_Components/
+author: LogSting
+logsource:
+  product: logsting
+  service: security
+detection:
+  selection:
+    class_uid: 2004
+    message|contains: 'vulnerable dependency'
+  condition: selection
+falsepositives:
+  - Advisory data lag; confirm against the current lockfile and upstream fixes
+level: high
+tags:
+  - attack.initial_access
+  - attack.t1195.001

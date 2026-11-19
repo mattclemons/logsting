@@ -1,0 +1,5 @@
+[
+  { "name": "lodash",   "fixed": "4.17.12", "cve": "CVE-2019-10744", "severity": "high",   "desc": "prototype pollution in defaultsDeep" },
+  { "name": "minimist", "fixed": "1.2.6",   "cve": "CVE-2021-44906", "severity": "high",   "desc": "prototype pollution" },
+  { "name": "express",  "fixed": "4.19.2",  "cve": "CVE-2024-29041", "severity": "medium", "desc": "open redirect via malformed URLs" }
+]

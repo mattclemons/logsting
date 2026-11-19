@@ -1,0 +1,25 @@
+title: Authentication brute force / credential stuffing
+id: 8d41b6f2-9c73-4a05-b1e8-3f6a2d9c0e57
+status: experimental
+description: >
+  The app emitted an OCSF Detection Finding (class_uid 2004) because
+  authentication failures from one source crossed a threshold in a short window.
+  Each login is a clean request the WAF cannot judge; brute force is a rate the
+  app measures at the point it counts attempts.
+references:
+  - https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures/
+author: LogSting
+logsource:
+  product: logsting
+  service: security
+detection:
+  selection:
+    class_uid: 2004
+    message|contains: 'authentication failures from one source'
+  condition: selection
+falsepositives:
+  - Shared egress IPs (NAT, proxy) can group unrelated users; key on account too
+level: high
+tags:
+  - attack.credential_access
+  - attack.t1110

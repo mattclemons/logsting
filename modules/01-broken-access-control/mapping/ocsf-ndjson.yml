@@ -1,0 +1,23 @@
+# Chainsaw mapping for LogSting OCSF events (JSON).
+# Chainsaw needs: a JSON array (test.sh slurps the NDJSON with jq), a group with
+# a filter that selects documents, and a fields list mapping each Sigma field to
+# its JSON path. The filter uses class_uid, a field every event has; a wildcard
+# provider filter would match nothing because these events carry no provider key.
+name: LogSting OCSF NDJSON
+kind: json
+rules: sigma
+groups:
+  - name: logsting
+    timestamp: time_dt
+    filter:
+      class_uid: 6004
+    fields:
+      - name: class_uid
+        from: class_uid
+        to: class_uid
+      - name: status_id
+        from: status_id
+        to: status_id
+      - name: message
+        from: message
+        to: message
